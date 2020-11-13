@@ -7,8 +7,10 @@ const app = express();
 app.use(express.static(path.join(__dirname, 'public')));
 
 const UsersRouter = require('./routes/users.js');
+const CardsRouter = require('./routes/cards.js');
 
 app.use('/', UsersRouter);
+app.use('/', CardsRouter);
 app.use('*', (req, res) => {
   res.status(404).send({ "message": "Запрашиваемый ресурс не найден" });
 });
