@@ -30,7 +30,6 @@ fsPromises.readFile(filePath, { encoding: 'utf8' })
         if (!user) {
           res.status(404).send({ "message": "Нет пользователя с таким id" });
         }
-
     })
     .catch(err => {
         res.status(404).send({ "message": "Нет такого файла" });
