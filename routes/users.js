@@ -15,24 +15,25 @@ router.get('/users', (req, res) => {
 
 router.get('/users/:id', (req, res) => {
   const filePath = path.join(__dirname, '..', 'data', 'users.json');
-  const fileReader = fs.createReadStream(filePath, { encoding: 'utf8' });
 
-  const {id} = req.params;
+  const { id } = req.params;
 
-fsPromises.readFile(filePath, { encoding: 'utf8' })
-    .then((data) => {return JSON.parse(data)})
+  fsPromises.readFile(filePath, { encoding: 'utf8' })
+    .then((data) => { return JSON.parse(data) })
     .then((data) => {
-      const user = data.find((item) => {;
+      const user = data.find((item) => {
+        ;
         return item._id === id;
       });
-        res.send(user);
 
-        if (!user) {
-          res.status(404).send({ "message": "Нет пользователя с таким id" });
-        }
+      if (!user) {
+        res.status(404).send({ "message": "Нет пользователя с таким id" });
+      }
+
+      res.send(user);
     })
     .catch(err => {
-        res.status(404).send({ "message": "Нет такого файла" });
+      res.status(404).send({ "message": "Нет такого файла" });
     });
 });
 
