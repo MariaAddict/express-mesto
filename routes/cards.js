@@ -7,7 +7,7 @@ router.get('/cards', (req, res) => {
   const fileReader = fs.createReadStream(filePath, { encoding: 'utf8' });
 
   res.writeHead(200, {
-    'Content-Type': 'application/json'
+    'Content-Type': 'application/json',
   });
   fileReader.pipe(res);
 });
