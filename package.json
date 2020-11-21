@@ -1,14 +1,14 @@
 {
   "name": "mesto-express",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "project mesto on express.js",
+  "main": "app.js",
   "scripts": {
     "start": "node app.js",
     "dev": "nodemon app.js"
   },
   "keywords": [],
-  "author": "",
+  "author": "Maria Kanygina",
   "license": "ISC",
   "dependencies": {
     "express": "^4.17.1"
