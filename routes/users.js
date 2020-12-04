@@ -1,37 +1,12 @@
 const router = require('express').Router();
-const fs = require('fs');
-const path = require('path');
-const fsPromises = require('fs').promises;
+const {
+  getUsers, getUser, createUser, updateProfile, updateAvatar,
+} = require('../controllers/users');
 
-router.get('/users', (req, res) => {
-  const filePath = path.join(__dirname, '..', 'data', 'users.json');
-  const fileReader = fs.createReadStream(filePath, { encoding: 'utf8' });
-
-  res.writeHead(200, {
-    'Content-Type': 'application/json',
-  });
-  fileReader.pipe(res);
-});
-
-router.get('/users/:id', (req, res) => {
-  const filePath = path.join(__dirname, '..', 'data', 'users.json');
-
-  const { id } = req.params;
-
-  fsPromises.readFile(filePath, { encoding: 'utf8' })
-    .then((data) => JSON.parse(data))
-    .then((data) => {
-      const user = data.find((item) => item._id === id);
-
-      if (!user) {
-        res.status(404).send({ message: 'Нет пользователя с таким id' });
-      }
-
-      res.send(user);
-    })
-    .catch(() => {
-      res.status(404).send({ message: 'Нет такого файла' });
-    });
-});
+router.get('/users', getUsers);
+router.get('/users/:id', getUser);
+router.post('/users', createUser);
+router.patch('/users/me', updateProfile);
+router.patch('/users/me/avatar', updateAvatar);
 
 module.exports = router;
