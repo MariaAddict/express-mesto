@@ -42,6 +42,17 @@ const likeCard = (req, res) => Card.findByIdAndUpdate(
     if (err.name === 'ErrorName') return res.status(404).send({ message: 'Карточка не лайкнулась' });
   });
 
+const dislikeCard = (req, res) => Card.findByIdAndUpdate(
+  req.params.id,
+  { $pull: { likes: req.user._id } },
+  { new: true },
+)
+  .then((data) => res.send(data))
+  // eslint-disable-next-line consistent-return
+  .catch((err) => {
+    if (err.name === 'ErrorName') return res.status(404).send({ message: 'Карточка не лайкнулась' });
+  });
+
 module.exports = {
-  getCards, createCard, deleteCard, likeCard,
+  getCards, createCard, deleteCard, likeCard, dislikeCard,
 };
