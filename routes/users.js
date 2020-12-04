@@ -10,10 +10,7 @@ router.get('/users', (req, res) => {
 });
 
 router.get('/users/:id', (req, res) => {
-  const { id } = req.params;
-
-  User.findOne({ id })
-    .then((data) => JSON.parse(data))
+  User.findById(req.params.id)
     .then((user) => {
       if (!user) {
         res.status(404).send({ message: 'Нет пользователя с таким id' });
