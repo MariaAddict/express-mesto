@@ -3,8 +3,9 @@ const User = require('../models/user');
 const getUsers = (req, res) => {
   User.find()
     .then((data) => res.send(data))
-    .catch(() => {
-      res.status(404).send({ message: 'Нет такого файла' });
+    // eslint-disable-next-line consistent-return
+    .catch((err) => {
+      if (err.name === 'ErrorName') return res.status(404).send({ message: 'Пользователи не найдены' });
     });
 };
 
@@ -16,15 +17,17 @@ const getUser = (req, res) => {
       }
       res.send(user);
     })
+    // eslint-disable-next-line consistent-return
     .catch((err) => {
-      res.status(404).send(err);
+      if (err.name === 'ErrorName') return res.status(404).send({ message: 'Нет пользователя с таким id' });
     });
 };
 
 const createUser = (req, res) => User.create({ ...req.body })
   .then((user) => res.send(user))
+  // eslint-disable-next-line consistent-return
   .catch((err) => {
-    res.status(404).send(err);
+    if (err.name === 'ErrorName') return res.status(400).send({ message: 'Некорректные данные пользователя' });
   });
 
 module.exports = {
