@@ -31,4 +31,17 @@ const deleteCard = (req, res) => {
     });
 };
 
-module.exports = { getCards, createCard, deleteCard };
+const likeCard = (req, res) => Card.findByIdAndUpdate(
+  req.params.id,
+  { $addToSet: { likes: req.user._id } },
+  { new: true },
+)
+  .then((data) => res.send(data))
+// eslint-disable-next-line consistent-return
+  .catch((err) => {
+    if (err.name === 'ErrorName') return res.status(404).send({ message: 'Карточка не лайкнулась' });
+  });
+
+module.exports = {
+  getCards, createCard, deleteCard, likeCard,
+};
