@@ -1,36 +1,37 @@
 const router = require('express').Router();
-const fs = require('fs');
-const path = require('path');
-const fsPromises = require('fs').promises;
+const User = require('../models/user');
 
 router.get('/users', (req, res) => {
-  const filePath = path.join(__dirname, '..', 'data', 'users.json');
-  const fileReader = fs.createReadStream(filePath, { encoding: 'utf8' });
-
-  res.writeHead(200, {
-    'Content-Type': 'application/json',
-  });
-  fileReader.pipe(res);
+  User.find()
+    .then((data) => res.send(data))
+    .catch(() => {
+      res.status(404).send({ message: 'Нет такого файла' });
+    });
 });
 
 router.get('/users/:id', (req, res) => {
-  const filePath = path.join(__dirname, '..', 'data', 'users.json');
-
   const { id } = req.params;
 
-  fsPromises.readFile(filePath, { encoding: 'utf8' })
+  User.findOne({ id })
     .then((data) => JSON.parse(data))
-    .then((data) => {
-      const user = data.find((item) => item._id === id);
-
+    .then((user) => {
       if (!user) {
         res.status(404).send({ message: 'Нет пользователя с таким id' });
       }
-
       res.send(user);
     })
-    .catch(() => {
-      res.status(404).send({ message: 'Нет такого файла' });
+    .catch((err) => {
+      res.status(404).send(err);
+    });
+});
+
+router.post('/users', (req, res) => {
+  // eslint-disable-next-line no-console
+  console.log('body: ', req.body);
+  return User.create({ ...req.body })
+    .then((user) => res.send(user))
+    .catch((err) => {
+      res.status(404).send(err);
     });
 });
 
