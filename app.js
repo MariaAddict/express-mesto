@@ -20,6 +20,13 @@ app.use(express.static(path.join(__dirname, 'public')));
 const UsersRouter = require('./routes/users.js');
 const CardsRouter = require('./routes/cards.js');
 
+app.use((req, res, next) => {
+  req.user = {
+    _id: '5fc9e686c8b23f0acc039a42',
+  };
+
+  next();
+});
 app.use('/', UsersRouter);
 app.use('/', CardsRouter);
 app.use('*', (req, res) => {
