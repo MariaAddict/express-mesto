@@ -1,35 +1,8 @@
 const router = require('express').Router();
-const User = require('../models/user');
+const { getUsers, getUser, createUser } = require('../controllers/users');
 
-router.get('/users', (req, res) => {
-  User.find()
-    .then((data) => res.send(data))
-    .catch(() => {
-      res.status(404).send({ message: 'Нет такого файла' });
-    });
-});
-
-router.get('/users/:id', (req, res) => {
-  User.findById(req.params.id)
-    .then((user) => {
-      if (!user) {
-        res.status(404).send({ message: 'Нет пользователя с таким id' });
-      }
-      res.send(user);
-    })
-    .catch((err) => {
-      res.status(404).send(err);
-    });
-});
-
-router.post('/users', (req, res) => {
-  // eslint-disable-next-line no-console
-  console.log('body: ', req.body);
-  return User.create({ ...req.body })
-    .then((user) => res.send(user))
-    .catch((err) => {
-      res.status(404).send(err);
-    });
-});
+router.get('/users', getUsers);
+router.get('/users/:id', getUser);
+router.post('/users', createUser);
 
 module.exports = router;
