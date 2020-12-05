@@ -24,10 +24,16 @@ const createCard = (req, res) => {
 
 const deleteCard = (req, res) => {
   Card.findByIdAndRemove(req.params.id)
-    .then((card) => res.send(card))
-    // eslint-disable-next-line consistent-return
+    .then((card) => {
+      if (!card) {
+        res.status(404).send({ message: 'Карточка не найдена' });
+        return;
+      }
+      res.send(card);
+    })
     .catch((err) => {
-      if (err.name === 'ErrorName') return res.status(404).send({ message: 'Карточка не найдена' });
+      if (err.name === 'CastError') return res.status(404).send({ message: 'Карточка не найдена' });
+      return res.status(500).send({ message: 'Ошибка на сервере' });
     });
 };
 
