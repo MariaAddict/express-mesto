@@ -41,7 +41,13 @@ const likeCard = (req, res) => Card.findByIdAndUpdate(
   { $addToSet: { likes: req.user._id } },
   { new: true },
 )
-  .then((data) => res.send(data))
+  .then((data) => {
+    if (!data) {
+      res.status(404).send({ message: 'Карточка не лайкнулась' });
+      return;
+    }
+    res.send(data);
+  })
   .catch((err) => {
     if (err.name === 'CastError') return res.status(404).send({ message: 'Карточка не лайкнулась' });
     return res.status(500).send({ message: 'Ошибка на сервере' });
