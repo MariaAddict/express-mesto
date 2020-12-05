@@ -50,12 +50,12 @@ const updateAvatar = (req, res) => {
   return User.findByIdAndUpdate(req.user._id, { avatar },
     {
       new: true,
-      upsert: true,
+      runValidators: true,
     })
     .then((data) => res.send(data))
-    // eslint-disable-next-line consistent-return
     .catch((err) => {
-      if (err.name === 'ErrorName') return res.status(400).send({ message: 'Данные пользователя не обновились' });
+      if (err.name === 'ValidationError') return res.status(400).send({ message: 'Аватар пользователя не обновился' });
+      return res.status(500).send({ message: 'Ошибка на сервере' });
     });
 };
 
