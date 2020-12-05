@@ -3,9 +3,9 @@ const User = require('../models/user');
 const getUsers = (req, res) => {
   User.find()
     .then((data) => res.send(data))
-    // eslint-disable-next-line consistent-return
     .catch((err) => {
-      if (err.name === 'ErrorName') return res.status(404).send({ message: 'Пользователи не найдены' });
+      if (err.name === 'CastError') return res.status(404).send({ message: 'Пользователи не найдены' });
+      return res.status(500).send({ message: 'Ошибка на сервере' });
     });
 };
 
