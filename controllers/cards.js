@@ -42,9 +42,9 @@ const likeCard = (req, res) => Card.findByIdAndUpdate(
   { new: true },
 )
   .then((data) => res.send(data))
-// eslint-disable-next-line consistent-return
   .catch((err) => {
-    if (err.name === 'ErrorName') return res.status(404).send({ message: 'Карточка не лайкнулась' });
+    if (err.name === 'CastError') return res.status(404).send({ message: 'Карточка не лайкнулась' });
+    return res.status(500).send({ message: 'Ошибка на сервере' });
   });
 
 const dislikeCard = (req, res) => Card.findByIdAndUpdate(
