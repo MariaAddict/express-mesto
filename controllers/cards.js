@@ -4,30 +4,35 @@ const getCards = (req, res) => {
   Card.find()
     .populate('user')
     .then((data) => res.send(data))
-    // eslint-disable-next-line consistent-return
     .catch((err) => {
-      if (err.name === 'ErrorName') return res.status(404).send(err);
+      if (err.name === 'CastError') return res.status(404).send({ message: 'Карточки не подтянулись' });
+      return res.status(500).send({ message: 'Ошибка на сервере' });
     });
 };
 
 const createCard = (req, res) => {
   const id = req.user._id;
-  // eslint-disable-next-line object-curly-spacing
-  const {name, link} = req.body;
+  const { name, link } = req.body;
   Card.create({ name, link, owner: id })
     .then((card) => res.send(card))
-    // eslint-disable-next-line consistent-return
     .catch((err) => {
-      if (err.name === 'ErrorName') return res.status(400).send({ message: 'Неккоректные данные карточки' });
+      if (err.name === 'ValidationError') return res.status(400).send({ message: 'Неккоректные данные карточки' });
+      return res.status(500).send({ message: 'Ошибка на сервере' });
     });
 };
 
 const deleteCard = (req, res) => {
   Card.findByIdAndRemove(req.params.id)
-    .then((card) => res.send(card))
-    // eslint-disable-next-line consistent-return
+    .then((card) => {
+      if (!card) {
+        res.status(404).send({ message: 'Карточка не найдена' });
+        return;
+      }
+      res.send(card);
+    })
     .catch((err) => {
-      if (err.name === 'ErrorName') return res.status(404).send({ message: 'Карточка не найдена' });
+      if (err.name === 'CastError') return res.status(404).send({ message: 'Карточка не найдена' });
+      return res.status(500).send({ message: 'Ошибка на сервере' });
     });
 };
 
@@ -36,10 +41,16 @@ const likeCard = (req, res) => Card.findByIdAndUpdate(
   { $addToSet: { likes: req.user._id } },
   { new: true },
 )
-  .then((data) => res.send(data))
-// eslint-disable-next-line consistent-return
+  .then((data) => {
+    if (!data) {
+      res.status(404).send({ message: 'Карточка не лайкнулась' });
+      return;
+    }
+    res.send(data);
+  })
   .catch((err) => {
-    if (err.name === 'ErrorName') return res.status(404).send({ message: 'Карточка не лайкнулась' });
+    if (err.name === 'CastError') return res.status(404).send({ message: 'Карточка не лайкнулась' });
+    return res.status(500).send({ message: 'Ошибка на сервере' });
   });
 
 const dislikeCard = (req, res) => Card.findByIdAndUpdate(
@@ -47,10 +58,16 @@ const dislikeCard = (req, res) => Card.findByIdAndUpdate(
   { $pull: { likes: req.user._id } },
   { new: true },
 )
-  .then((data) => res.send(data))
-  // eslint-disable-next-line consistent-return
+  .then((data) => {
+    if (!data) {
+      res.status(404).send({ message: 'Like не убрался' });
+      return;
+    }
+    res.send(data);
+  })
   .catch((err) => {
-    if (err.name === 'ErrorName') return res.status(404).send({ message: 'Карточка не лайкнулась' });
+    if (err.name === 'CastError') return res.status(404).send({ message: 'Like не убрался' });
+    return res.status(500).send({ message: 'Ошибка на сервере' });
   });
 
 module.exports = {
