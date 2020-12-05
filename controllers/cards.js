@@ -12,13 +12,12 @@ const getCards = (req, res) => {
 
 const createCard = (req, res) => {
   const id = req.user._id;
-  // eslint-disable-next-line object-curly-spacing
-  const {name, link} = req.body;
+  const { name, link } = req.body;
   Card.create({ name, link, owner: id })
     .then((card) => res.send(card))
-    // eslint-disable-next-line consistent-return
     .catch((err) => {
-      if (err.name === 'ErrorName') return res.status(400).send({ message: 'Неккоректные данные карточки' });
+      if (err.name === 'ValidationError') return res.status(400).send({ message: 'Неккоректные данные карточки' });
+      return res.status(500).send({ message: 'Ошибка на сервере' });
     });
 };
 
