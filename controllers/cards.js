@@ -4,9 +4,9 @@ const getCards = (req, res) => {
   Card.find()
     .populate('user')
     .then((data) => res.send(data))
-    // eslint-disable-next-line consistent-return
     .catch((err) => {
-      if (err.name === 'ErrorName') return res.status(404).send(err);
+      if (err.name === 'CastError') return res.status(404).send({ message: 'Карточки не подтянулись' });
+      return res.status(500).send({ message: 'Ошибка на сервере' });
     });
 };
 
