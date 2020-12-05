@@ -52,10 +52,16 @@ const dislikeCard = (req, res) => Card.findByIdAndUpdate(
   { $pull: { likes: req.user._id } },
   { new: true },
 )
-  .then((data) => res.send(data))
-  // eslint-disable-next-line consistent-return
+  .then((data) => {
+    if (!data) {
+      res.status(404).send({ message: 'Like не убрался' });
+      return;
+    }
+    res.send(data);
+  })
   .catch((err) => {
-    if (err.name === 'ErrorName') return res.status(404).send({ message: 'Карточка не лайкнулась' });
+    if (err.name === 'CastError') return res.status(404).send({ message: 'Like не убрался' });
+    return res.status(500).send({ message: 'Ошибка на сервере' });
   });
 
 module.exports = {
