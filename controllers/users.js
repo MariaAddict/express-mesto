@@ -14,12 +14,13 @@ const getUser = (req, res) => {
     .then((user) => {
       if (!user) {
         res.status(404).send({ message: 'Нет пользователя с таким id' });
+        return;
       }
       res.send(user);
     })
-    // eslint-disable-next-line consistent-return
     .catch((err) => {
-      if (err.name === 'ErrorName') return res.status(404).send({ message: 'Нет пользователя с таким id' });
+      if (err.name === 'CastError') return res.status(404).send({ message: 'Нет пользователя с таким id' });
+      return res.status(500).send({ message: 'Ошибка на сервере' });
     });
 };
 
