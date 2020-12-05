@@ -26,9 +26,9 @@ const getUser = (req, res) => {
 
 const createUser = (req, res) => User.create({ ...req.body })
   .then((user) => res.send(user))
-  // eslint-disable-next-line consistent-return
   .catch((err) => {
-    if (err.name === 'ErrorName') return res.status(400).send({ message: 'Некорректные данные пользователя' });
+    if (err.name === 'ValidationError') return res.status(400).send({ message: 'Некорректные данные пользователя' });
+    return res.status(500).send({ message: 'Ошибка на сервере' });
   });
 
 // eslint-disable-next-line no-unused-vars
