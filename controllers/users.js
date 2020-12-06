@@ -40,7 +40,7 @@ const updateProfile = (req, res) => {
     })
     .then((data) => res.send(data))
     .catch((err) => {
-      if (err.name === 'ValidationError') return res.status(400).send({ message: 'Данные пользователя не обновились' });
+      if (err.name === 'ValidationError' || err.name === 'CastError') return res.status(400).send({ message: 'Данные пользователя не обновились' });
       return res.status(500).send({ message: 'Ошибка на сервере' });
     });
 };
