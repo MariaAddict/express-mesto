@@ -1,15 +1,30 @@
 const router = require('express').Router();
-const fs = require('fs');
-const path = require('path');
+const { celebrate, Joi } = require('celebrate');
+const {
+  getCards, createCard, deleteCard, likeCard, dislikeCard,
+} = require('../controllers/cards');
 
-router.get('/cards', (req, res) => {
-  const filePath = path.join(__dirname, '..', 'data', 'cards.json');
-  const fileReader = fs.createReadStream(filePath, { encoding: 'utf8' });
-
-  res.writeHead(200, {
-    'Content-Type': 'application/json'
-  });
-  fileReader.pipe(res);
-});
+router.get('/cards', getCards);
+router.post('/cards', celebrate({
+  body: Joi.object().keys({
+    name: Joi.string().required().min(2).max(30),
+    link: Joi.string().required().pattern(/https?:\/\/(w{3})?\.?[0-9A-Za-z\-._~:/?#[\]@!$&'()*,+;=]#?/),
+  }),
+}), createCard);
+router.delete('/cards/:id', celebrate({
+  params: Joi.object().keys({
+    id: Joi.string().hex().required().length(24),
+  }),
+}), deleteCard);
+router.put('/cards/:id/likes', celebrate({
+  params: Joi.object().keys({
+    id: Joi.string().hex().required().length(24),
+  }),
+}), likeCard);
+router.delete('/cards/:id/likes', celebrate({
+  params: Joi.object().keys({
+    id: Joi.string().hex().required().length(24),
+  }),
+}), dislikeCard);
 
 module.exports = router;
